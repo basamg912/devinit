@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1789953364601,
+  "lastScanned": 1791084161589,
   "projectRoot": "/Users/basamg/work/Personal/zed-theme",
   "techStack": {
     "languages": [],
@@ -32,8 +32,8 @@
     "vimrc": {
       "path": "vimrc",
       "purpose": null,
-      "fileCount": 7,
-      "lastAccessed": 1789953364578,
+      "fileCount": 8,
+      "lastAccessed": 1791084161575,
       "keyFiles": [
         "LICENSE",
         "README.md",
@@ -44,6 +44,12 @@
     }
   },
   "hotPaths": [
+    {
+      "path": "vimrc/my_configs.vim",
+      "accessCount": 2,
+      "lastAccessed": 1791084481356,
+      "type": "file"
+    },
     {
       "path": "vimrc/install_awesome_vimrc.sh",
       "accessCount": 1,
@@ -60,12 +66,6 @@
       "path": "vimrc/vimrcs/extended.vim",
       "accessCount": 1,
       "lastAccessed": 1789953475300,
-      "type": "file"
-    },
-    {
-      "path": "vimrc/my_configs.vim",
-      "accessCount": 1,
-      "lastAccessed": 1789953708805,
       "type": "file"
     }
   ],

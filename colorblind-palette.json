@@ -1,0 +1,48 @@
+{
+  "light": {
+    "background": "#ffffff",
+    "foreground": "#262626",
+    "muted": "#626262",
+    "blue": "#005faf",
+    "amber": "#875f00",
+    "purple": "#870087",
+    "surface": "#f6f8fa",
+    "hover": "#eef0f2",
+    "border": "#8a8a8a",
+    "selection": "#e7eef5",
+    "search": "#f5e9d3",
+    "search_active": "#f3e6d2",
+    "added_background": "#edf5fc",
+    "deleted_background": "#f8edf8",
+    "cursor": "#005faf",
+    "ansi": [
+      "#262626", "#870087", "#005faf", "#875f00",
+      "#005f87", "#870087", "#00666f", "#626262",
+      "#626262", "#5f005f", "#004787", "#6b4900",
+      "#005faf", "#5f005f", "#00555f", "#262626"
+    ]
+  },
+  "dark": {
+    "background": "#0d1117",
+    "foreground": "#eeeeee",
+    "muted": "#bcbcbc",
+    "blue": "#87d7ff",
+    "amber": "#ffaf00",
+    "purple": "#ffafd7",
+    "surface": "#161b22",
+    "hover": "#21262d",
+    "border": "#777777",
+    "selection": "#263442",
+    "search": "#30303a",
+    "search_active": "#35302a",
+    "added_background": "#142a39",
+    "deleted_background": "#301c30",
+    "cursor": "#ffaf00",
+    "ansi": [
+      "#9e9e9e", "#ffafd7", "#87d7ff", "#ffaf00",
+      "#5fafdf", "#d7afff", "#87d7d7", "#d0d0d0",
+      "#bcbcbc", "#ffd7ff", "#afd7ff", "#ffd787",
+      "#87d7ff", "#ffafd7", "#afffff", "#eeeeee"
+    ]
+  }
+}
