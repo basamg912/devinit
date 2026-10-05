@@ -22,6 +22,7 @@ let s:records = []
 
 try
   call assert_equal('colorblind_terminal', g:colors_name)
+  call assert_equal(1, g:matchparen_disable_cursor_hl)
   call assert_equal(0, &termguicolors)
   call assert_equal('yes', &signcolumn)
   call assert_equal(1, &swapfile)
@@ -39,6 +40,12 @@ try
           \ synIDattr(hlID('ALEErrorSign'), 'fg', 'cterm'))
     call assert_equal('1', synIDattr(hlID('Search'), 'reverse', 'cterm'))
     call assert_equal('', synIDattr(hlID('Search'), 'bg', 'cterm'))
+    for s:highlight_mode in ['cterm', 'gui']
+      call assert_equal('1', synIDattr(hlID('MatchParen'), 'bold', s:highlight_mode))
+      call assert_equal('1', synIDattr(hlID('MatchParen'), 'underline', s:highlight_mode))
+      call assert_notequal('1', synIDattr(hlID('MatchParen'), 'reverse', s:highlight_mode))
+      call assert_equal('', synIDattr(hlID('MatchParen'), 'bg', s:highlight_mode))
+    endfor
     let s:groups = {}
     for s:group in ['Comment', 'Constant', 'String', 'Identifier', 'Function',
           \ 'Statement', 'PreProc', 'Type', 'Special', 'LineNr',

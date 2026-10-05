@@ -22,6 +22,9 @@ if exists('g:lightline')
 endif
 colorscheme colorblind_terminal
 
+" Keep matching-paren highlights from overriding the actual cursor.
+let g:matchparen_disable_cursor_hl = 1
+
 " DECSCUSR uses a space before q; SGR color codes do not set cursor shape.
 function! s:ConfigureCursor() abort
   let &t_EI = "\e[2 q"
