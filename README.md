@@ -60,6 +60,17 @@ Vim 설정 변경 이유와 키 목록은 [VIM_REVIEW.md](VIM_REVIEW.md)에 정�
 이번 설치 전 설정은 Zed의 `settings.json.before-vim-colorblind-20261004`와
 iTerm2의 `com.googlecode.iterm2.plist.before-vim-colorblind-20261004`에 백업했다.
 
+## tmux
+
+`tmux/tmux.conf`를 `~/.tmux.conf`에 설치한다. 기존 `Ctrl-b`를 유지하며
+Vim식 패널 이동·복사, 현재 디렉터리에서 분할, 세션 저장·수동 복원과
+밝은/어두운 접근성 팔레트를 제공한다.
+플러그인 목록과 짧은 사용법은 [TMUX_GUIDE.md](TMUX_GUIDE.md)에 정리했다.
+
+```sh
+python3 tests/tmux_config.py
+```
+
 ## 기존 GitHub 테마
 
 기존 `github-colorblind-split.json`과 Catppuccin 프리셋은 그대로 제공한다.

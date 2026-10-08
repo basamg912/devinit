@@ -12,6 +12,7 @@ runtime plugin/ale.vim
 runtime plugin/gitgutter.vim
 runtime plugin/lightline.vim
 runtime plugin/lightline/ale.vim
+runtime plugin/highlightedyank.vim
 runtime autoload/ale/sign.vim
 let g:ale_enabled = 0
 let g:gitgutter_enabled = 0
@@ -51,7 +52,8 @@ try
           \ 'Statement', 'PreProc', 'Type', 'Special', 'LineNr',
           \ 'ALEErrorSign', 'ALEWarningSign', 'GitGutterAdd', 'GitGutterDelete',
           \ 'GitGutterChange', 'DiffAdd', 'DiffDelete', 'DiffChange', 'DiffText',
-          \ 'StatusLine', 'StatusLineNC', 'Pmenu', 'CopilotSuggestion']
+          \ 'StatusLine', 'StatusLineNC', 'Pmenu', 'CopilotSuggestion',
+          \ 'HighlightedyankRegion']
       let s:id = synIDtrans(hlID(s:group))
       let s:groups[s:group] = {
             \ 'fg': synIDattr(s:id, 'fg', 'gui'), 'bg': synIDattr(s:id, 'bg', 'gui'),
@@ -63,6 +65,30 @@ try
   endfor
   execute 'source ' . fnameescape(s:runtime . '/my_configs.vim')
   call assert_equal('colorblind_terminal', g:lightline.colorscheme)
+  call assert_equal(250, g:highlightedyank_highlight_duration)
+  enew
+  call setline(1, ['first line', 'second line'])
+  normal! yy
+  sleep 20m
+  let s:yank_matches = filter(getmatches(), 'v:val.group ==# "HighlightedyankRegion"')
+  call assert_false(empty(s:yank_matches))
+  call assert_equal("first line\n", getreg('"'))
+  sleep 300m
+  call assert_true(empty(filter(getmatches(), 'v:val.group ==# "HighlightedyankRegion"')))
+  normal! 0yw
+  sleep 20m
+  call assert_false(empty(filter(getmatches(), 'v:val.group ==# "HighlightedyankRegion"')))
+  call assert_equal('first ', getreg('"'))
+  sleep 300m
+  normal! 0v4ly
+  sleep 20m
+  call assert_false(empty(filter(getmatches(), 'v:val.group ==# "HighlightedyankRegion"')))
+  call assert_equal('first', getreg('"'))
+  sleep 300m
+  normal! dd
+  sleep 20m
+  call assert_true(empty(filter(getmatches(), 'v:val.group ==# "HighlightedyankRegion"')))
+  setlocal nomodified
   call assert_equal('E', sign_getdefined('ALEErrorSign')[0].text->trim())
   call assert_equal('W', sign_getdefined('ALEWarningSign')[0].text->trim())
   call assert_equal('~', sign_getdefined('GitGutterLineModified')[0].text->trim())

@@ -9,7 +9,9 @@
 | 기존 설정 | 판단과 적용 |
 | --- | --- |
 | `colorscheme default` + 강제 `background=dark` | 터미널 배경을 유지하려는 목적은 타당하지만 밝은 배경과 진단·diff 색상까지 보장하지 못했다. 배경별 접근성 테마를 추가했다. |
-| 주석 처리된 검색 강조 | `Search`의 기존 배경색까지 초기화하고 반전으로 표시한다. 현재 검색 위치와 괄호에는 굵기도 추가한다. `Esc`로 강조를 지우는 동작은 유지한다. |
+| 주석 처리된 검색 강조 | `Search`의 기존 배경색까지 초기화하고 반전으로 표시한다. 현재 검색 위치에는 굵기도 추가한다. `Esc`로 강조를 지우는 동작은 유지한다. |
+| 괄호 강조가 커서와 혼동됨 | 커서 아래 괄호에는 매칭 강조를 덮지 않고, 반대쪽 괄호를 밑줄·굵게 표시한다. |
+| 복사 직후 시각적 피드백 없음 | `vim-highlightedyank`로 복사 영역을 250ms 동안 중립 회색 배경·굵은 글씨로 표시한다. `yy`, `yw`, 선택 영역 복사와 레지스터 동작을 유지한다. |
 | 오류 적색, Git 추가 녹색·삭제 적색 | 파랑·황갈색·자주색과 `E/W/I`, `+/~/-`를 함께 사용한다. 오류 밑줄, 모드 이름, 커서 모양으로 색 이외의 단서도 제공한다. |
 | 고정 주황색 커서 | 밝은 배경에서 대비가 부족하다. 밝은 배경은 파랑, 어두운 배경은 주황으로 바꾼다. Normal/Insert/Replace는 블록/세로선/밑줄이다. |
 | `t_EI = "\e[2;34m"` 등 | 문자 색상용 SGR 시퀀스다. 커서 모양용 `CSI 2 q / 6 q / 4 q`로 바로잡았다. 종료·일시중지 때 기본 커서를 복원한다. |
@@ -30,8 +32,14 @@ ANSI 16색 슬롯은 터미널 테마에 따라 실제 색이 달라진다. 주�
 표시는 256색 팔레트의 고정 인덱스를 쓰고 터미널의 기본 배경은 유지한다.
 `termguicolors`를 강제하지 않는다. GUI에서는 같은 RGB 값을 사용한다.
 색상 테마 변경 시 Vim의 `background` 값에 따라 다시 적용된다.
-터미널이 배경 변경을 알려주지 않으면 `:set background=light` 또는
-`:set background=dark`로 맞출 수 있다.
+tmux 안에서 상위 설정의 강제 `screen-256color` 지정 대신 실제 `$TERM`을 사용한다.
+`tmux-256color`에서는 Vim의 기본 배경색 질의(`t_RB`)가 비어 있으므로
+OSC 11 질의를 설정한다. 시작·포커스 복귀·실행 재개·설정 재로딩 시 실제
+배경을 다시 확인하고 Vim 내장 `colorresp`가 `background`를 갱신한다.
+기존 1초 타이머는 같은 배경에서도 커서 숨김·표시와 화면 갱신을 반복하므로 제거했다.
+편집 중에는 배경색을 폴링하지 않으며 터미널 자체의 배경색은 바꾸지 않는다.
+다른 터미널에서 자동 감지가 불가능하면 `:set background=light` 또는
+`:set background=dark`로 수동 지정할 수 있다.
 
 Latte `#eff1f5`, Mocha `#1e1e2e`, GitHub light `#ffffff`, GitHub dark `#0d1117`을
 기준으로 주요 문법, 주석, 진단, Git, diff, 팝업, 상태줄의 텍스트 대비를 계산했다.
@@ -54,6 +62,7 @@ Latte `#eff1f5`, Mocha `#1e1e2e`, GitHub light `#ffffff`, GitHub dark `#0d1117`�
 
 [ALE 공식 문서](https://github.com/dense-analysis/ale),
 [GitGutter 공식 문서](https://github.com/airblade/vim-gitgutter),
+[HighlightedYank 공식 문서](https://github.com/machakann/vim-highlightedyank),
 [Vim 복구 문서](https://vimhelp.org/recover.txt.html),
 [Vim 터미널 문서](https://vimhelp.org/term.txt.html)를 확인했다.
 
@@ -87,7 +96,11 @@ PATH에서 발견되지 않았다. Python/JavaScript 진단은 프로젝트에�
 ```sh
 VIM_COLOR_AUDIT=/tmp/vim-colors.json vim -Nu NONE -i NONE -n -es -S tests/vim_config.vim
 node tests/contrast.mjs /tmp/vim-colors.json
+python3 tests/vim_tmux_theme.py
 ```
 
 GCC/Clang 성공, 잘못된 코드의 quickfix, 공백·특수문자 파일명, Python/C 실행,
 Undo 재로딩, 밝은·어두운 테마, sign 기호, 모드별 F5, 커서 시퀀스를 검증한다.
+tmux 연동 검사는 별도 서버에서 실제 Vim을 실행하여 OSC 11 감지, 실행 중
+포커스 복귀 후 밝은/어두운 배경 전환, 설정 재로딩 시 중복 훅 방지와
+대기 중 터미널 출력이 없는지도 확인한다.

@@ -47,6 +47,7 @@ for s:group in ['IncSearch', 'CurSearch']
   call s:Hi(s:group, s:none, s:none, 'reverse,bold')
 endfor
 call s:Hi('MatchParen', s:none, s:none, 'bold,underline')
+call s:Hi('HighlightedyankRegion', s:fg, s:panel, 'bold')
 call s:Hi('LineNr', s:muted, s:none, 'NONE')
 call s:Hi('CursorLineNr', s:fg, s:none, 'bold')
 call s:Hi('SignColumn', s:none, s:none, 'NONE')

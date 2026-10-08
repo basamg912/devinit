@@ -1,6 +1,11 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Accessible colors; terminal background, adaptive semantic highlights
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Undo the upstream screen terminal override inside tmux.
+if !has('gui_running') && !empty($TMUX) && $TERM =~# '^\%(screen\|tmux\)'
+      \ && &term !=# $TERM
+  let &term = $TERM
+endif
 " Undo the upstream forced dark background so OSC 11 can detect the terminal.
 if get(g:, 'colors_name', '') !=# 'colorblind_terminal'
   set background&
@@ -22,8 +27,38 @@ if exists('g:lightline')
 endif
 colorscheme colorblind_terminal
 
+" tmux terminfo lacks OSC 11; query the real background instead of guessing.
+if exists('s:background_timer')
+  call timer_stop(s:background_timer)
+  unlet s:background_timer
+endif
+if !has('gui_running') && &term =~# '^\%(screen\|tmux\)'
+      \ && has('termresponse') && exists('*echoraw')
+  let &t_RB = "\e]11;?\x07"
+  let &t_fe = "\e[?1004h"
+  let &t_fd = "\e[?1004l"
+  execute "set <FocusGained>=\e[I"
+  execute "set <FocusLost>=\e[O"
+
+  function! s:RequestTerminalBackground() abort
+    call echoraw(&t_RB)
+  endfunction
+
+  augroup TerminalBackground
+    autocmd!
+    autocmd VimEnter,VimResume,FocusGained * call <SID>RequestTerminalBackground()
+  augroup END
+  " Polling wakes Vim's display loop even when the background is unchanged.
+  " Vim's colorresp plugin handles responses on startup, focus and resume.
+  if v:vim_did_enter
+    call s:RequestTerminalBackground()
+  endif
+endif
+
 " Keep matching-paren highlights from overriding the actual cursor.
 let g:matchparen_disable_cursor_hl = 1
+
+let g:highlightedyank_highlight_duration = 250
 
 " DECSCUSR uses a space before q; SGR color codes do not set cursor shape.
 function! s:ConfigureCursor() abort
